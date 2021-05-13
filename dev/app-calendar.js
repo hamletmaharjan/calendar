@@ -4,22 +4,32 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
- import {LitElement, html, css} from 'lit';
- import { format, addMonths, subMonths , addDays, subDays
-          ,startOfWeek, endOfWeek, startOfMonth, endOfMonth
-          , isSameDay, isSameMonth} from 'date-fns';
+import {LitElement, html, css} from 'lit';
+import { format, addMonths, subMonths , addDays, subDays
+        ,startOfWeek, endOfWeek, startOfMonth, endOfMonth
+        , isSameDay, isSameMonth} from 'date-fns';
 //  const { format } = dateFns;
 
- /**
-  * An example element.
-  *
-  * @slot - This element has a slot
-  * @csspart button - The button
-  */
-  export class AppCalender extends LitElement {
-   static get styles() {
-     return css`
-     .icon {
+import './components/app-calender-header';
+
+/**
+* An example element.
+*
+* @slot - This element has a slot
+* @csspart button - The button
+*/
+export class AppCalendar extends LitElement {
+  static get styles() {
+    return css`
+    app-calender-header {
+      --main-color: #1a8fff;
+      --text-color: #777;
+      --text-color-light: #ccc;
+      --border-color: #eee;
+      --bg-color: #f9f9f9;
+      --neutral-color: #fff;
+    }
+    .icon {
         font-family: 'Material Icons', serif;
         font-style: normal;
         display: inline-block;
@@ -237,155 +247,161 @@
         flex-basis: calc(100%/7);
         width: calc(100%/7);
       }
-     `
-   }
- 
-   static get properties() {
-     return {
-       /**
+    `
+  }
+
+  static get properties() {
+    return {
+      /**
         * The name to say "Hello" to.
         */
-       name: {type: String},
- 
-       /**
+      name: {type: String},
+
+      /**
         * The number of times the button has been clicked.
         */
-       count: {type: Number},
+      count: {type: Number},
 
-       currentMonth: {type: Object},
+      currentMonth: {type: Object},
 
-       selectedDate: {type: Object}
-     };
-   }
- 
-   constructor() {
-     super();
-     this.name = 'World';
-     this.count = 0;
-     this.currentMonth = new Date();
-     this.selectedDate = new Date();
-   }
+      selectedDate: {type: Object}
+    };
+  }
 
-    headerTemplate() {
-      const dateFormat = "MMMM yyyy";
-      return html`
-        <div class="header row flex-middle">
-          <div class="col col-start">
-            <div class="icon" @click="${this.prevMonth}">
-              chevron_left
-            </div>
-          </div>
-          <div class="col col-center">
-            <span>
-              ${format(this.currentMonth, dateFormat)}
-            </span>
-          </div>
-          <div class="col col-end" @click="${this.nextMonth}">
-            <div class="icon">chevron_right</div>
+  constructor() {
+    super();
+    this.name = 'World';
+    this.count = 0;
+    this.currentMonth = new Date();
+    this.selectedDate = new Date();
+
+    this.nextMonth = this.nextMonth.bind(this);
+    this.prevMonth = this.prevMonth.bind(this);
+  }
+
+  headerTemplate() {
+    const dateFormat = "MMMM yyyy";
+    return html`
+      <div class="header row flex-middle">
+        <div class="col col-start">
+          <div class="icon" @click="${this.prevMonth}">
+            chevron_left
           </div>
         </div>
-      `;
-    }
-
-    daysTemplate() {
-      const dateFormat = "EEEE";
-      const days = [];
-      let startDate = startOfWeek(this.currentMonth);
-      for (let i = 0; i < 7; i++) {
-        days.push(
-          html`<div class="col col-center" key="${i}">
-            ${format(addDays(startDate, i), dateFormat)}
-          </div>`
-        );
-      }
-      return html`<div class="days row">${days}</div>`;
-    }
-
-    cellsTemplate() {
-      // const { currentMonth, selectedDate } = this.state;
-      const monthStart = startOfMonth(this.currentMonth);
-      const monthEnd = endOfMonth(monthStart);
-      const startDate = startOfWeek(monthStart);
-      const endDate = endOfWeek(monthEnd);
-
-      const dateFormat = "d";
-      const rows = [];
-
-      let days = [];
-      let day = startDate;
-      let formattedDate = "";
-
-      while (day <= endDate) {
-        for (let i = 0; i < 7; i++) {
-          formattedDate = format(day, dateFormat);
-          const cloneDay = day;
-          days.push(
-            html`
-            <div
-              class="col cell ${
-                !isSameMonth(day, monthStart)
-                  ? "disabled"
-                  : isSameDay(day, this.selectedDate) ? "selected" : ""
-              }"
-              key=${day}
-              
-            >
-              <span class="number">${formattedDate}</span>
-              <span class="bg">${formattedDate}</span>
-            </div> 
-            `
-          );
-          day = addDays(day, 1);
-        }
-        rows.push(
-          html`
-          <div class="row" key=${day}>
-            ${days}
-          </div>
-          `
-        );
-        days = [];
-      }
-
-      return html`
-        <div class="body">${rows}</div>
-      `;
-    }
-
-    onDateClick(day) {
-    }
-
-    nextMonth() {
-      this.currentMonth = addMonths(this.currentMonth, 1);
-    }
-
-    prevMonth() {
-      this.currentMonth = subMonths(this.currentMonth, 1);
-    }
-
-
-
- 
-   render() {
-      console.log('render');
-     return html`
-      <div class="calendar">
-        ${this.headerTemplate()}
-        <div>
-        ${this.daysTemplate()}
-        ${this.cellsTemplate()}
-        
-            
+        <div class="col col-center">
+          <span>
+            ${format(this.currentMonth, dateFormat)}
+          </span>
         </div>
+        <div class="col col-end" @click="${this.nextMonth}">
+          <div class="icon">chevron_right</div>
         </div>
       </div>
-     `;
-   }
+    `;
+  }
+
+  daysTemplate() {
+    const dateFormat = "EEEE";
+    const days = [];
+    let startDate = startOfWeek(this.currentMonth);
+    for (let i = 0; i < 7; i++) {
+      days.push(
+        html`<div class="col col-center" key="${i}">
+          ${format(addDays(startDate, i), dateFormat)}
+        </div>`
+      );
+    }
+    return html`<div class="days row">${days}</div>`;
+  }
+
+  cellsTemplate() {
+    // const { currentMonth, selectedDate } = this.state;
+    const monthStart = startOfMonth(this.currentMonth);
+    const monthEnd = endOfMonth(monthStart);
+    const startDate = startOfWeek(monthStart);
+    const endDate = endOfWeek(monthEnd);
+
+    const dateFormat = "d";
+    const rows = [];
+
+    let days = [];
+    let day = startDate;
+    let formattedDate = "";
+
+    while (day <= endDate) {
+      for (let i = 0; i < 7; i++) {
+        formattedDate = format(day, dateFormat);
+        const cloneDay = day;
+        days.push(
+          html`
+          <div
+            class="col cell ${
+              !isSameMonth(day, monthStart)
+                ? "disabled"
+                : isSameDay(day, this.selectedDate) ? "selected" : ""
+            }"
+            key=${day}
+            
+          >
+            <span class="number">${formattedDate}</span>
+            <span class="bg">${formattedDate}</span>
+          </div> 
+          `
+        );
+        day = addDays(day, 1);
+      }
+      rows.push(
+        html`
+        <div class="row" key=${day}>
+          ${days}
+        </div>
+        `
+      );
+      days = [];
+    }
+
+    return html`
+      <div class="body">${rows}</div>
+    `;
+  }
+
+  onDateClick(day) {
+  }
+
+  nextMonth() {
+    this.currentMonth = addMonths(this.currentMonth, 1);
+  }
+
+  prevMonth() {
+    this.currentMonth = subMonths(this.currentMonth, 1);
+  }
+
+
+
+
+  render() {
+      console.log('render');
+    return html`
+      <div class="calendar">
+        <app-calender-header 
+          .onPrevMonthClick="${this.prevMonth}"
+          .onNextMonthClick="${this.nextMonth}"
+          .currentMonth="${this.currentMonth}"
+          ></app-calender-header>
+        ${this.headerTemplate()}
+        <div>
+          ${this.daysTemplate()}
+          ${this.cellsTemplate()}
+  
+        </div>
+      </div>
+    `;
+  }
+
+  _onClick() {
+    this.count++;
+  }
+}
  
-   _onClick() {
-     this.count++;
-   }
- }
- 
- window.customElements.define('app-calender', AppCalender);
+window.customElements.define('app-calendar', AppCalendar);
  
