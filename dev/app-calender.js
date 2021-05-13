@@ -5,6 +5,10 @@
  */
 
  import {LitElement, html, css} from 'lit';
+ import { format, addMonths, subMonths , addDays, subDays
+          ,startOfWeek, endOfWeek, startOfMonth, endOfMonth
+          , isSameDay, isSameMonth} from 'date-fns';
+//  const { format } = dateFns;
 
  /**
   * An example element.
@@ -12,7 +16,7 @@
   * @slot - This element has a slot
   * @csspart button - The button
   */
- export class AppCalender extends LitElement {
+  export class AppCalender extends LitElement {
    static get styles() {
      return css`
      .icon {
@@ -247,6 +251,10 @@
         * The number of times the button has been clicked.
         */
        count: {type: Number},
+
+       currentMonth: {type: Object},
+
+       selectedDate: {type: Object}
      };
    }
  
@@ -254,54 +262,121 @@
      super();
      this.name = 'World';
      this.count = 0;
+     this.currentMonth = new Date();
+     this.selectedDate = new Date();
    }
+
+    headerTemplate() {
+      const dateFormat = "MMMM yyyy";
+      return html`
+        <div class="header row flex-middle">
+          <div class="col col-start">
+            <div class="icon" @click="${this.prevMonth}">
+              chevron_left
+            </div>
+          </div>
+          <div class="col col-center">
+            <span>
+              ${format(this.currentMonth, dateFormat)}
+            </span>
+          </div>
+          <div class="col col-end" @click="${this.nextMonth}">
+            <div class="icon">chevron_right</div>
+          </div>
+        </div>
+      `;
+    }
+
+    daysTemplate() {
+      const dateFormat = "EEEE";
+      const days = [];
+      let startDate = startOfWeek(this.currentMonth);
+      for (let i = 0; i < 7; i++) {
+        days.push(
+          html`<div class="col col-center" key="${i}">
+            ${format(addDays(startDate, i), dateFormat)}
+          </div>`
+        );
+      }
+      return html`<div class="days row">${days}</div>`;
+    }
+
+    cellsTemplate() {
+      // const { currentMonth, selectedDate } = this.state;
+      const monthStart = startOfMonth(this.currentMonth);
+      const monthEnd = endOfMonth(monthStart);
+      const startDate = startOfWeek(monthStart);
+      const endDate = endOfWeek(monthEnd);
+
+      const dateFormat = "d";
+      const rows = [];
+
+      let days = [];
+      let day = startDate;
+      let formattedDate = "";
+
+      while (day <= endDate) {
+        for (let i = 0; i < 7; i++) {
+          formattedDate = format(day, dateFormat);
+          const cloneDay = day;
+          days.push(
+            html`
+            <div
+              class="col cell ${
+                !isSameMonth(day, monthStart)
+                  ? "disabled"
+                  : isSameDay(day, this.selectedDate) ? "selected" : ""
+              }"
+              key=${day}
+              
+            >
+              <span class="number">${formattedDate}</span>
+              <span class="bg">${formattedDate}</span>
+            </div> 
+            `
+          );
+          day = addDays(day, 1);
+        }
+        rows.push(
+          html`
+          <div class="row" key=${day}>
+            ${days}
+          </div>
+          `
+        );
+        days = [];
+      }
+
+      return html`
+        <div class="body">${rows}</div>
+      `;
+    }
+
+    onDateClick(day) {
+    }
+
+    nextMonth() {
+      this.currentMonth = addMonths(this.currentMonth, 1);
+    }
+
+    prevMonth() {
+      this.currentMonth = subMonths(this.currentMonth, 1);
+    }
+
+
+
  
    render() {
+      console.log('render');
      return html`
-      <div class="calender">
-        <div class="header row flex-middle">
-            <div class="col col-start">
-            <div class="icon">
-                chevron_left
-            </div>
-            </div>
-            <div class="col col-center">
-            <span>
-                May 2021
-            </span>
-            </div>
-            <div class="col col-end">
-            <div class="icon">chevron_right</div>
-            </div>
+      <div class="calendar">
+        ${this.headerTemplate()}
+        <div>
+        ${this.daysTemplate()}
+        ${this.cellsTemplate()}
+        
+            
         </div>
-        <div class="days row">
-            <div class="col col-center" key="1">
-                Sunday
-            </div>
-            <div class="col col-center" key="2">
-                Monday
-            </div>
-            <div class="col col-center" key="3">
-                Tuesday
-            </div>
-            <div class="col col-center" key="4">
-                Wednesday
-            </div>
-            <div class="col col-center" key="5">
-                Thusrday
-            </div>
-            <div class="col col-center" key="6">
-                Friday
-            </div>
-            <div class="col col-center" key="7">
-                Saturday
-            </div>
-        </div>
-        <div class="body">
-            <div class="col cell">
-                <span class="number">3</span>
-                <span class="bg">5</span>
-            </div>
         </div>
       </div>
      `;
