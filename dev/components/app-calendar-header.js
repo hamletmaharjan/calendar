@@ -12,7 +12,7 @@ import {format} from 'date-fns';
  * @slot - This element has a slot
  * @csspart button - The button
  */
-export class AppCalenderHeader extends LitElement {
+export class AppCalendarHeader extends LitElement {
   static get styles() {
     return css`
     .icon {
@@ -121,85 +121,9 @@ export class AppCalenderHeader extends LitElement {
       margin-right: 1em;
     }
     
-    .days {
-      text-transform: uppercase;
-      font-weight: 400;
-      color: var(--text-color-light);
-      font-size: 70%;
-      padding: .75em 0;
-      border-bottom: 1px solid var(--border-color);
-    }
     
-    .body .cell {
-      position: relative;
-      height: 5em;
-      border-right: 1px solid var(--border-color);
-      overflow: hidden;
-      cursor: pointer;
-      background: var(--neutral-color);
-      transition: 0.25s ease-out;
-    }
     
-    .body .cell:hover {
-      background: var(--bg-color);
-      transition: 0.5s ease-out;
-    }
     
-    .body .selected {
-      border-left: 10px solid transparent;
-      border-image: linear-gradient(45deg, #1a8fff 0%,#53cbf1 40%);
-      border-image-slice: 1;
-    }
-    
-    .body .row {
-      border-bottom: 1px solid var(--border-color);
-    }
-    
-    .body .row:last-child {
-      border-bottom: none;
-    }
-    
-    .body .cell:last-child {
-      border-right: none;
-    }
-    
-    .body .cell .number {
-      position: absolute;
-      font-size: 82.5%;
-      line-height: 1;
-      top: .75em;
-      right: .75em;
-      font-weight: 700;
-    }
-    
-    .body .disabled {
-      color: var(--text-color-light);
-      pointer-events: none;
-    }
-    
-    .body .cell .bg {
-      font-weight: 700;
-      line-height: 1;
-      color: var(--main-color);
-      opacity: 0;
-      font-size: 8em;
-      position: absolute;
-      top: -.2em;
-      right: -.05em;
-      transition: .25s ease-out;
-      letter-spacing: -.07em;
-    }
-    
-    .body .cell:hover .bg, .body .selected .bg  {
-      opacity: 0.05;
-      transition: .5s ease-in;
-    }
-    
-    .body .col {
-      flex-grow: 0;
-      flex-basis: calc(100%/7);
-      width: calc(100%/7);
-    }
     
     `;
   }
@@ -244,4 +168,4 @@ export class AppCalenderHeader extends LitElement {
 
 }
 
-window.customElements.define('app-calender-header', AppCalenderHeader);
+window.customElements.define('app-calendar-header', AppCalendarHeader);

@@ -10,7 +10,8 @@ import { format, addMonths, subMonths , addDays, subDays
         , isSameDay, isSameMonth} from 'date-fns';
 //  const { format } = dateFns;
 
-import './components/app-calender-header';
+import './components/app-calendar-header';
+import './components/app-calendar-section-header.js';
 
 /**
 * An example element.
@@ -21,7 +22,7 @@ import './components/app-calender-header';
 export class AppCalendar extends LitElement {
   static get styles() {
     return css`
-    app-calender-header {
+    app-calendar-header {
       --main-color: #1a8fff;
       --text-color: #777;
       --text-color-light: #ccc;
@@ -383,14 +384,15 @@ export class AppCalendar extends LitElement {
       console.log('render');
     return html`
       <div class="calendar">
-        <app-calender-header 
+        <app-calendar-header 
           .onPrevMonthClick="${this.prevMonth}"
           .onNextMonthClick="${this.nextMonth}"
           .currentMonth="${this.currentMonth}"
-          ></app-calender-header>
-        ${this.headerTemplate()}
+          ></app-calendar-header>
         <div>
-          ${this.daysTemplate()}
+          <app-calendar-section-header
+            .currentMonth="${this.currentMonth}"
+            ></app-calendar-section-header>
           ${this.cellsTemplate()}
   
         </div>
