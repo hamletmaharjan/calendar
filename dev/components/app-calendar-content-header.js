@@ -12,7 +12,7 @@ import {format, addDays, startOfWeek} from 'date-fns';
  * @slot - This element has a slot
  * @csspart button - The button
  */
-export class AppCalendarSectionHeader extends LitElement {
+export class AppCalendarContentHeader extends LitElement {
   static get styles() {
     return css`
     
@@ -101,7 +101,7 @@ export class AppCalendarSectionHeader extends LitElement {
       
   }
 
-  sectionHeaderTemplate() {
+  contentHeaderTemplate() {
     // const dateFormat = "EEEE";
     const days = [];
     let startDate = startOfWeek(this.currentMonth);
@@ -118,10 +118,10 @@ export class AppCalendarSectionHeader extends LitElement {
   render() {
     // const dateFormat = "MMMM yyyy";
     return html`
-      ${this.sectionHeaderTemplate()}
+      ${this.contentHeaderTemplate()}
     `;
   }
 
 }
 
-window.customElements.define('app-calendar-section-header', AppCalendarSectionHeader);
+window.customElements.define('app-calendar-content-header', AppCalendarContentHeader);

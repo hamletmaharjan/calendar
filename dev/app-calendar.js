@@ -11,7 +11,9 @@ import { format, addMonths, subMonths , addDays, subDays
 //  const { format } = dateFns;
 
 import './components/app-calendar-header';
-import './components/app-calendar-section-header.js';
+import './components/app-calendar-content-header.js';
+import './components/app-calendar-cell.js';
+import './components/app-calendar-content.js';
 
 /**
 * An example element.
@@ -328,7 +330,7 @@ export class AppCalendar extends LitElement {
     let days = [];
     let day = startDate;
     let formattedDate = "";
-
+    // console.log(typeof(monthStart));
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, dateFormat);
@@ -347,6 +349,7 @@ export class AppCalendar extends LitElement {
             <span class="number">${formattedDate}</span>
             <span class="bg">${formattedDate}</span>
           </div> 
+          
           `
         );
         day = addDays(day, 1);
@@ -389,13 +392,8 @@ export class AppCalendar extends LitElement {
           .onNextMonthClick="${this.nextMonth}"
           .currentMonth="${this.currentMonth}"
           ></app-calendar-header>
-        <div>
-          <app-calendar-section-header
-            .currentMonth="${this.currentMonth}"
-            ></app-calendar-section-header>
-          ${this.cellsTemplate()}
-  
-        </div>
+        <app-calendar-content .currentMonth="${this.currentMonth}" .selectedDate="${this.selectedDate}"></app-calendar-content>
+        
       </div>
     `;
   }
