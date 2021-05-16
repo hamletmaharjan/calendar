@@ -5,9 +5,12 @@
  */
 
  import {LitElement, html, css} from 'lit';
- import { format, addMonths, subMonths , addDays, subDays
-  ,startOfWeek, endOfWeek, startOfMonth, endOfMonth
-  , isSameDay, isSameMonth} from 'date-fns';
+ import { format, addDays
+  ,startOfWeek, endOfWeek, startOfMonth, endOfMonth} from 'date-fns';
+
+  import './app-calendar-cell';
+
+
  /**
   * An example element.
   *
@@ -18,27 +21,7 @@ export class AppCalendarBody extends LitElement {
    static get styles() {
      return css`
      
-    .icon {
-        font-family: 'Material Icons', serif;
-        font-style: normal;
-        display: inline-block;
-        vertical-align: middle;
-        line-height: 1;
-        text-transform: none;
-        letter-spacing: normal;
-        word-wrap: normal;
-        white-space: nowrap;
-        direction: ltr;
-      
-        -webkit-font-smoothing: antialiased;
-        text-rendering: optimizeLegibility;
-        -moz-osx-font-smoothing: grayscale;
-        font-feature-settings: 'liga';
-      }
-      
-      
-    
-      
+  
       
       /* GENERAL */
       
@@ -205,21 +188,18 @@ export class AppCalendarBody extends LitElement {
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, dateFormat);
+        // console.log(typeof(formattedDate))
         const cloneDay = day;
         days.push(
           html`
-          <div
-            class="col cell ${
-              !isSameMonth(day, monthStart)
-                ? "disabled"
-                : isSameDay(day, this.selectedDate) ? "selected" : ""
-            }"
-            key=${day}
-            
-          >
-            <span class="number">${formattedDate}</span>
-            <span class="bg">${formattedDate}</span>
-          </div> 
+          <div class="col">
+          <app-calendar-cell .day="${day}"
+          .monthStart="${monthStart}"
+          .selectedDate="${this.selectedDate}"
+          .formattedDate="${formattedDate}"
+          ></app-calendar-cell>
+          </div>
+         
           
           `
         );
@@ -245,6 +225,7 @@ export class AppCalendarBody extends LitElement {
     return html`
       ${this.contentBodyTemplate()}
     `;
+
   }
 
 }

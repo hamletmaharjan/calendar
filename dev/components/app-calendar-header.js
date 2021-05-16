@@ -159,8 +159,8 @@ export class AppCalendarHeader extends LitElement {
             ${format(this.currentMonth, this.dateFormat)}
           </span>
         </div>
-        <div class="col col-end" @click="${this.onNextMonthClick}">
-          <div class="icon">chevron_right</div>
+        <div class="col col-end">
+          <div class="icon"  @click="${this.onNextMonthClick}">chevron_right</div>
         </div>
       </div>
     `;

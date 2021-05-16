@@ -260,11 +260,6 @@ export class AppCalendar extends LitElement {
         */
       name: {type: String},
 
-      /**
-        * The number of times the button has been clicked.
-        */
-      count: {type: Number},
-
       currentMonth: {type: Object},
 
       selectedDate: {type: Object}
@@ -282,92 +277,8 @@ export class AppCalendar extends LitElement {
     this.prevMonth = this.prevMonth.bind(this);
   }
 
-  headerTemplate() {
-    const dateFormat = "MMMM yyyy";
-    return html`
-      <div class="header row flex-middle">
-        <div class="col col-start">
-          <div class="icon" @click="${this.prevMonth}">
-            chevron_left
-          </div>
-        </div>
-        <div class="col col-center">
-          <span>
-            ${format(this.currentMonth, dateFormat)}
-          </span>
-        </div>
-        <div class="col col-end" @click="${this.nextMonth}">
-          <div class="icon">chevron_right</div>
-        </div>
-      </div>
-    `;
-  }
-
-  daysTemplate() {
-    const dateFormat = "EEEE";
-    const days = [];
-    let startDate = startOfWeek(this.currentMonth);
-    for (let i = 0; i < 7; i++) {
-      days.push(
-        html`<div class="col col-center" key="${i}">
-          ${format(addDays(startDate, i), dateFormat)}
-        </div>`
-      );
-    }
-    return html`<div class="days row">${days}</div>`;
-  }
-
-  cellsTemplate() {
-    // const { currentMonth, selectedDate } = this.state;
-    const monthStart = startOfMonth(this.currentMonth);
-    const monthEnd = endOfMonth(monthStart);
-    const startDate = startOfWeek(monthStart);
-    const endDate = endOfWeek(monthEnd);
-
-    const dateFormat = "d";
-    const rows = [];
-
-    let days = [];
-    let day = startDate;
-    let formattedDate = "";
-    // console.log(typeof(monthStart));
-    while (day <= endDate) {
-      for (let i = 0; i < 7; i++) {
-        formattedDate = format(day, dateFormat);
-        const cloneDay = day;
-        days.push(
-          html`
-          <div
-            class="col cell ${
-              !isSameMonth(day, monthStart)
-                ? "disabled"
-                : isSameDay(day, this.selectedDate) ? "selected" : ""
-            }"
-            key=${day}
-            
-          >
-            <span class="number">${formattedDate}</span>
-            <span class="bg">${formattedDate}</span>
-          </div> 
-          
-          `
-        );
-        day = addDays(day, 1);
-      }
-      rows.push(
-        html`
-        <div class="row" key=${day}>
-          ${days}
-        </div>
-        `
-      );
-      days = [];
-    }
-
-    return html`
-      <div class="body">${rows}</div>
-    `;
-  }
+  
+ 
 
   onDateClick(day) {
   }
@@ -398,9 +309,7 @@ export class AppCalendar extends LitElement {
     `;
   }
 
-  _onClick() {
-    this.count++;
-  }
+
 }
  
 window.customElements.define('app-calendar', AppCalendar);
