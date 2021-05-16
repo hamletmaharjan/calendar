@@ -4,25 +4,31 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
- import {LitElement, html, css} from 'lit';
- import { format, addDays
-  ,startOfWeek, endOfWeek, startOfMonth, endOfMonth} from 'date-fns';
+import {LitElement, html, css} from 'lit';
+import {format, addDays,startOfWeek, 
+        endOfWeek, startOfMonth, endOfMonth} from 'date-fns';
 
-  import './app-calendar-cell';
+import './app-calendar-cell';
 
-
- /**
-  * An example element.
-  *
-  * @slot - This element has a slot
-  * @csspart button - The button
-  */
+/**
+ * `<app-calendar-body>` Custom component to add a calendar body
+ *
+ * <app-calendar-content>
+ *  <app-calendar-body></app-calendar-body>
+ *
+ * @polymer
+ * @litElement
+ * @customElement
+ */
 export class AppCalendarBody extends LitElement {
-   static get styles() {
-     return css`
-     
-  
-      
+
+  /**
+   * Static getter styles
+   * 
+   * @returns {styles}
+   */
+  static get styles() {
+    return css`
       /* GENERAL */
       
       * {
@@ -39,9 +45,6 @@ export class AppCalendarBody extends LitElement {
           position: relative;
       }
       
-      
-      
-      
       /* GRID */
       
       .row {
@@ -53,126 +56,44 @@ export class AppCalendarBody extends LitElement {
         width: 100%;
       }
       
-      .row-middle {
-        align-items: center;
-      }
-      
       .col {
         flex-grow: 1;
         flex-basis: 0;
         max-width: 100%;
       }
       
-      .col-start {
-        justify-content: flex-start;
-        text-align: left;
-      }
-      
-      .col-center {
-        justify-content: center;
-        text-align: center;
-      }
-      
-      .col-end {
-        justify-content: flex-end;
-        text-align: right;
-      }
-      
-      
       /* Calendar */
-      
-      
-      
-    
-      .body .cell {
-        position: relative;
-        height: 5em;
-        border-right: 1px solid var(--border-color);
-        overflow: hidden;
-        cursor: pointer;
-        background: var(--neutral-color);
-        transition: 0.25s ease-out;
-      }
-      
-      .body .cell:hover {
-        background: var(--bg-color);
-        transition: 0.5s ease-out;
-      }
-      
-      .body .selected {
-        border-left: 10px solid transparent;
-        border-image: linear-gradient(45deg, #1a8fff 0%,#53cbf1 40%);
-        border-image-slice: 1;
-      }
-      
-      .body .row {
-        border-bottom: 1px solid var(--border-color);
-      }
-      
-      .body .row:last-child {
-        border-bottom: none;
-      }
-      
-      .body .cell:last-child {
-        border-right: none;
-      }
-      
-      .body .cell .number {
-        position: absolute;
-        font-size: 82.5%;
-        line-height: 1;
-        top: .75em;
-        right: .75em;
-        font-weight: 700;
-      }
-      
-      .body .disabled {
-        color: var(--text-color-light);
-        pointer-events: none;
-      }
-      
-      .body .cell .bg {
-        font-weight: 700;
-        line-height: 1;
-        color: var(--main-color);
-        opacity: 0;
-        font-size: 8em;
-        position: absolute;
-        top: -.2em;
-        right: -.05em;
-        transition: .25s ease-out;
-        letter-spacing: -.07em;
-      }
-      
-      .body .cell:hover .bg, .body .selected .bg  {
-        opacity: 0.05;
-        transition: .5s ease-in;
-      }
-      
       .body .col {
         flex-grow: 0;
         flex-basis: calc(100%/7);
         width: calc(100%/7);
       }
-     `;
-   }
+    `;
+  }
  
-   static get properties() {
-     return {
-       selectedDate: {type: Object},
-       currentMonth: {type: Object}
-     };
-   }
+  /**
+   * Static getter properties
+   * 
+   * @returns Object
+   */
+  static get properties() {
+    return {
+      /**
+      * The object that holds the current date
+      */
+      selectedDate: {type: Object},
+
+      /**
+      * The object that holds the current date to represent current month
+      */
+      currentMonth: {type: Object}
+    };
+  }
  
-   constructor() {
-     super();
- 
-     this.dateFormat = "EEEE";
-       
-   }
- 
-   contentBodyTemplate() {
-    // const { currentMonth, selectedDate } = this.state;
+  /**
+   * calender body template to be rendered
+   */
+  contentBodyTemplate() {
     const monthStart = startOfMonth(this.currentMonth);
     const monthEnd = endOfMonth(monthStart);
     const startDate = startOfWeek(monthStart);
@@ -188,19 +109,15 @@ export class AppCalendarBody extends LitElement {
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, dateFormat);
-        // console.log(typeof(formattedDate))
-        const cloneDay = day;
         days.push(
           html`
-          <div class="col">
-          <app-calendar-cell .day="${day}"
-          .monthStart="${monthStart}"
-          .selectedDate="${this.selectedDate}"
-          .formattedDate="${formattedDate}"
-          ></app-calendar-cell>
-          </div>
-         
-          
+            <div class="col">
+              <app-calendar-cell .day="${day}"
+              .monthStart="${monthStart}"
+              .selectedDate="${this.selectedDate}"
+              .formattedDate="${formattedDate}"
+              ></app-calendar-cell>
+            </div>
           `
         );
         day = addDays(day, 1);
@@ -220,12 +137,15 @@ export class AppCalendarBody extends LitElement {
     `;
   }
  
+  /**
+   * render method
+   * 
+   * @returns {customElements}
+   */
   render() {
-    // const dateFormat = "MMMM yyyy";
     return html`
       ${this.contentBodyTemplate()}
     `;
-
   }
 
 }

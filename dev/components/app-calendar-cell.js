@@ -6,17 +6,27 @@
 
 import {LitElement, html, css} from 'lit';
 import {isSameDay, isSameMonth} from 'date-fns';
+
 /**
-* An example element.
-*
-* @slot - This element has a slot
-* @csspart button - The button
-*/
+ * `<app-calendar-body>` Custom component to add a calendar body
+ *
+ * <app-calendar-content>
+ *  <app-calendar-body></app-calendar-body>
+ *
+ * @polymer
+ * @litElement
+ * @customElement
+ */
 export class AppCalendarCell extends LitElement {
+
+  /**
+   * Static getter styles
+   * 
+   * @returns {styles}
+   */
   static get styles() {
     return css`
-    
-    /* GENERAL */
+      /* GENERAL */
       
       * {
         box-sizing: border-box;
@@ -33,49 +43,7 @@ export class AppCalendarCell extends LitElement {
       }
       
       
-      
-      
-      /* GRID */
-      
-      .row {
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        width: 100%;
-      }
-      
-      .row-middle {
-        align-items: center;
-      }
-      
-      .col {
-        flex-grow: 1;
-        flex-basis: 0;
-        max-width: 100%;
-      }
-      
-      .col-start {
-        justify-content: flex-start;
-        text-align: left;
-      }
-      
-      .col-center {
-        justify-content: center;
-        text-align: center;
-      }
-      
-      .col-end {
-        justify-content: flex-end;
-        text-align: right;
-      }
-      
-      
       /* Calendar */
-      
-      
-      
     
       .cell {
         position: relative;
@@ -96,14 +64,6 @@ export class AppCalendarCell extends LitElement {
         border-left: 10px solid transparent;
         border-image: linear-gradient(45deg, #1a8fff 0%,#53cbf1 40%);
         border-image-slice: 1;
-      }
-      
-      .row {
-        border-bottom: 1px solid var(--border-color);
-      }
-      
-      .row:last-child {
-        border-bottom: none;
       }
       
       .cell:last-child {
@@ -141,44 +101,52 @@ export class AppCalendarCell extends LitElement {
         opacity: 0.05;
         transition: .5s ease-in;
       }
-      
-      .col {
-        flex-grow: 0;
-        flex-basis: calc(100%/7);
-        width: calc(100%/7);
-      }
     `;
   }
 
+  /**
+   * Static getter properties
+   * 
+   * @returns Object
+   */
   static get properties() {
     return {
+      /**
+       * holds formatted date in number format
+       */
       formattedDate: {type: String},
+
+      /**
+       * holds the current date
+       */
       selectedDate: {type: Object},
+
+      /**
+       * holds the date for the current cell
+       */
       day: {type: Object},
+
+      /**
+       * holds the start of the current month
+       */
       monthStart: {type:Object}
     };
   }
 
-  constructor() {
-    super();
-
-    // this.dateFormat = "EEEE";
-      
-  }
-
-
+  /**
+   * render method
+   * 
+   * @returns {customElements}
+   */
   render() {
-    // const dateFormat = "MMMM yyyy";
     return html`
-      <div
+      <div 
         class="cell ${
-          !isSameMonth(this.day, this.monthStart)
-            ? "disabled"
-            : isSameDay(this.day, this.selectedDate) ? "selected" : ""
+        !isSameMonth(this.day, this.monthStart)
+          ? "disabled"
+          : isSameDay(this.day, this.selectedDate) ? "selected" : ""
         }"
-        key=${this.day}
-        
-      >
+        key=${this.day}>
         <span class="number">${this.formattedDate}</span>
         <span class="bg">${this.formattedDate}</span>
       </div> 

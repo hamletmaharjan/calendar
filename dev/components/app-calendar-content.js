@@ -4,41 +4,48 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
- import {LitElement, html, css} from 'lit';
- import {format, addDays, startOfWeek} from 'date-fns';
+import {LitElement, html} from 'lit';
 
-import './app-calendar-content-header';
 import './app-calendar-body';
+import './app-calendar-content-header';
 
- /**
-  * An example element.
-  *
-  * @slot - This element has a slot
-  * @csspart button - The button
-  */
- export class AppCalendarContent extends LitElement {
-   static get styles() {
-     return css`
-     
-     
-     `;
-   }
- 
+/**
+ * `<app-calendar-content>` Custom component to add a calendar content
+ *
+ * <app-calendar>
+ *  <app-calendar-content></app-calendar-content>
+ *
+ * @polymer
+ * @litElement
+ * @customElement
+ */
+export class AppCalendarContent extends LitElement {
+
+  /**
+   * Static getter properties
+   * 
+   * @returns Object
+   */
   static get properties() {
     return {
+      /**
+       * holds the current date to represent the month to pass down to its children components
+       */
       currentMonth: {type: Object},
+
+      /**
+       * holds the current date to pass down to its children components
+       */
       selectedDate: {type:Object}
     };
   }
 
-  constructor() {
-    super();
-      
-  }
- 
-   
+  /**
+   * render method
+   * 
+   * @returns {customElements}
+   */
   render() {
-    // const dateFormat = "MMMM yyyy";
     return html`
       <div>
         <app-calendar-content-header
@@ -50,11 +57,10 @@ import './app-calendar-body';
           .currentMonth="${this.currentMonth}"
           ></app-calendar-body>
       </div>
-      
     `;
   }
 
 }
 
- window.customElements.define('app-calendar-content', AppCalendarContent);
+window.customElements.define('app-calendar-content', AppCalendarContent);
  
