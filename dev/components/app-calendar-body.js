@@ -55,6 +55,14 @@ export class AppCalendarBody extends LitElement {
         flex-wrap: wrap;
         width: 100%;
       }
+
+      .body .row {
+        border-bottom: 1px solid var(--border-color);
+      }
+      
+      .body .row:last-child {
+        border-bottom: none;
+      }
       
       .col {
         flex-grow: 1;
@@ -67,6 +75,8 @@ export class AppCalendarBody extends LitElement {
         flex-grow: 0;
         flex-basis: calc(100%/7);
         width: calc(100%/7);
+        border-right: 1px solid var(--border-color);
+
       }
     `;
   }

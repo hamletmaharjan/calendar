@@ -48,7 +48,7 @@ export class AppCalendarCell extends LitElement {
       .cell {
         position: relative;
         height: 5em;
-        border-right: 1px solid var(--border-color);
+        // border-right: 1px solid var(--border-color);
         overflow: hidden;
         cursor: pointer;
         background: var(--neutral-color);
@@ -148,7 +148,6 @@ export class AppCalendarCell extends LitElement {
         }"
         key=${this.day}>
         <span class="number">${this.formattedDate}</span>
-        <span class="bg">${this.formattedDate}</span>
       </div> 
     `;
   }
