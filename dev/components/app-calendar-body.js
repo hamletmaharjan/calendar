@@ -96,7 +96,9 @@ export class AppCalendarBody extends LitElement {
       /**
       * The object that holds the current date to represent current month
       */
-      currentMonth: {type: Object}
+      currentMonth: {type: Object},
+
+      events: {type:Array}
     };
   }
  
@@ -122,7 +124,9 @@ export class AppCalendarBody extends LitElement {
         days.push(
           html`
             <div class="col">
-              <app-calendar-cell .day="${day}"
+              <app-calendar-cell 
+              .events="${this.events}"
+              .day="${day}"
               .monthStart="${monthStart}"
               .selectedDate="${this.selectedDate}"
               .formattedDate="${formattedDate}"

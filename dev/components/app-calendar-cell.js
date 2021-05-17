@@ -47,7 +47,7 @@ export class AppCalendarCell extends LitElement {
     
       .cell {
         position: relative;
-        height: 5em;
+        height: 5.5em;
         // border-right: 1px solid var(--border-color);
         overflow: hidden;
         cursor: pointer;
@@ -61,9 +61,7 @@ export class AppCalendarCell extends LitElement {
       }
       
       .selected {
-        border-left: 10px solid transparent;
-        border-image: linear-gradient(45deg, #1a8fff 0%,#53cbf1 40%);
-        border-image-slice: 1;
+        background: var(--bg-color);
       }
       
       .cell:last-child {
@@ -101,6 +99,25 @@ export class AppCalendarCell extends LitElement {
         opacity: 0.05;
         transition: .5s ease-in;
       }
+      .top {
+        height:35%;
+        // background:red;
+      }
+      .bottom {
+        font-size:12px;
+      }
+      .event {
+        background:#039dfc;
+        color:white;
+        width:90%;
+        margin:0 auto;
+        padding:0px 10px;
+        border-radius:5px;
+        margin-bottom:2px;
+      }
+      .more {
+        text-align:center;
+      }
     `;
   }
 
@@ -129,8 +146,40 @@ export class AppCalendarCell extends LitElement {
       /**
        * holds the start of the current month
        */
-      monthStart: {type:Object}
+      monthStart: {type:Object},
+
+      events: {type:Array}
     };
+  }
+
+  renderEventsTemplate() {
+    let allEvents = [];
+    let count = 0;
+    this.events.forEach(item => {
+      if(isSameDay(new Date(item.start), this.day)){
+        if(count<2){
+          allEvents.push(
+            html`
+              <div class="event">
+                <span>${item.title.substring(0,12)}</span>
+              </div>
+            `
+          )
+        }
+        count++;
+      }
+    });
+    if(count>2){
+      allEvents.push(
+        html`
+          <div class="more">
+            <span>+ ${count-2} more</span>
+          </div>
+        `
+      )
+    }
+
+    return allEvents;
   }
 
   /**
@@ -147,7 +196,12 @@ export class AppCalendarCell extends LitElement {
           : isSameDay(this.day, this.selectedDate) ? "selected" : ""
         }"
         key=${this.day}>
-        <span class="number">${this.formattedDate}</span>
+        <div class="top">
+          <span class="number">${this.formattedDate}</span>
+        </div>
+        <div class="bottom">
+          ${this.renderEventsTemplate()}
+        </div>
       </div> 
     `;
   }

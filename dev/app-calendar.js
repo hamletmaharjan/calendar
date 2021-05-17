@@ -5,7 +5,7 @@
  */
 
 import {LitElement, html, css} from 'lit';
-import {addMonths, subMonths} from 'date-fns';
+import {addMonths, subMonths, isAfter, isBefore, isSameDay} from 'date-fns';
 
 import './components/app-calendar-header';
 import './components/app-calendar-cell.js';
@@ -73,7 +73,12 @@ export class AppCalendar extends LitElement {
       /**
         * The object that holds the current date
         */
-      selectedDate: {type: Object}
+      selectedDate: {type: Object},
+
+      /**
+       * array to hold all the events
+       */
+      events: {type:Array}
     };
   }
 
@@ -85,7 +90,13 @@ export class AppCalendar extends LitElement {
 
     this.currentMonth = new Date();
     this.selectedDate = new Date();
-
+    this.events = [
+      {"start":"2021-05-17T08:00:00.000Z","end":"2021-05-17T17:00:00.000Z","title":"Business of Software Conference"},
+      {"start":"2021-05-17T08:00:00.000Z","end":"2021-05-17T17:00:00.000Z","title":"test"},
+      {"start":"2021-05-22T12:00:00.000Z","end":"2021-05-21T20:00:00.000Z","title":"All hands"},
+      {"start":"2021-05-29T12:00:00.000Z","end":"2021-05-39T20:00:00.000Z","title":"Community binge marathon"},
+      {"start":"2021-05-17T06:00:00.000Z","end":"2021-05-17T07:00:00.000Z","title":"Product team mtg."}
+    ];
     this.nextMonth = this.nextMonth.bind(this);
     this.prevMonth = this.prevMonth.bind(this);
   }
@@ -105,6 +116,7 @@ export class AppCalendar extends LitElement {
    * @returns {customElements}
    */
   render() {
+    console.log(isSameDay(new Date(this.events[0].start), this.currentMonth), this.currentMonth);
     return html`
       <div class="calendar">
         <app-calendar-header 
@@ -112,7 +124,7 @@ export class AppCalendar extends LitElement {
           .onNextMonthClick="${this.nextMonth}"
           .currentMonth="${this.currentMonth}"
           ></app-calendar-header>
-        <app-calendar-content .currentMonth="${this.currentMonth}" .selectedDate="${this.selectedDate}"></app-calendar-content>
+        <app-calendar-content .events="${this.events}" .currentMonth="${this.currentMonth}" .selectedDate="${this.selectedDate}"></app-calendar-content>
         
       </div>
     `;

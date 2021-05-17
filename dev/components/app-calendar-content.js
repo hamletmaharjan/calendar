@@ -36,7 +36,9 @@ export class AppCalendarContent extends LitElement {
       /**
        * holds the current date to pass down to its children components
        */
-      selectedDate: {type:Object}
+      selectedDate: {type:Object},
+
+      events: {type:Array}
     };
   }
 
@@ -53,6 +55,7 @@ export class AppCalendarContent extends LitElement {
         ></app-calendar-content-header>
 
         <app-calendar-body
+          .events="${this.events}"
           .selectedDate="${this.selectedDate}"
           .currentMonth="${this.currentMonth}"
           ></app-calendar-body>
