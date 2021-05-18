@@ -79,8 +79,8 @@ export class AppCalendarContentHeader extends LitElement {
       
       .days {
         text-transform: uppercase;
-        font-weight: 400;
-        color: var(--text-color-light);
+        font-weight: 600;
+        // color: var(--text-color-light);
         font-size: 70%;
         padding: .75em 0;
         border-bottom: 1px solid var(--border-color);

@@ -154,12 +154,13 @@ export class AppCalendar extends LitElement {
     `;
   }
 
-  handleShowAppMenu(e, items, day) {
-    console.log('more', items);
+  handleShowAppMenu(e, items, day, pos) {
+    console.log(pos);
     // let menu = this.shadowRoot.querySelector('app-menu');
-    const positions = {left:e.clientX-10 + 'px', top: e.clientY+'px'};
-    this.menu.positions = {...positions};
-    console.log(positions);
+    // const positions = {left:e.clientX-10 + 'px', top: e.clientY+'px'};
+    // this.menu.positions = {...positions};
+    this.menu.positions = pos;
+    // console.log(positions);
     this.menu.items = items;
     this.menu.day = day;
     this.menu.hidden = false;

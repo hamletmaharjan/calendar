@@ -178,11 +178,13 @@ export class AppCalendarCell extends LitElement {
   }
 
   handleMoreClick(e) {
+    let rect = this.shadowRoot.querySelector('#test').getBoundingClientRect();
+    // console.log(rect);
     let filteredEvents = this.events.filter(eventItem => {
       return isSameDay(new Date(eventItem.start), this.day);
     });
     // filteredEvents.splice(0,2);
-    this.onMoreMenuClick(e, filteredEvents, this.day);
+    this.onMoreMenuClick(e, filteredEvents, this.day, {left: rect.x-5 + 'px', top: rect.y-5 + 'px'});
   }
 
   updated() {
@@ -272,7 +274,7 @@ export class AppCalendarCell extends LitElement {
    */
   render() {
     return html`
-      <div 
+      <div id="test"
         class="cell ${
         !isSameMonth(this.day, this.monthStart)
           ? "disabled"
