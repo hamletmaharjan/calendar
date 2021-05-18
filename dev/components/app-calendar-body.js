@@ -99,7 +99,8 @@ export class AppCalendarBody extends LitElement {
 
       events: {type:Array},
 
-      onMoreMenuClick: {type: Function}
+      onMoreMenuClick: {type: Function},
+      onEventChange: {type: Function}
     };
   }
  
@@ -132,6 +133,7 @@ export class AppCalendarBody extends LitElement {
               .selectedDate="${this.selectedDate}"
               .formattedDate="${formattedDate}"
               .onMoreMenuClick="${this.onMoreMenuClick}"
+              .onEventChange="${this.onEventChange}"
               ></app-calendar-cell>
             </div>
           `

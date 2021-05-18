@@ -5,7 +5,7 @@
  */
 
 import {LitElement, html, css, nothing} from 'lit';
-import {isSameDay, isSameMonth} from 'date-fns';
+import {isSameDay, isSameMonth, formatISO} from 'date-fns';
 
 import './app-menu';
 
@@ -163,7 +163,8 @@ export class AppCalendarCell extends LitElement {
 
       onMoreMenuClick: {type: Function},
 
-      hasMore: {type: Boolean}
+      hasMore: {type: Boolean},
+      onEventChange: {type: Function}
     };
   }
 
@@ -184,6 +185,37 @@ export class AppCalendarCell extends LitElement {
     this.onMoreMenuClick(e, filteredEvents, this.day);
   }
 
+  updated() {
+    let draggableItems = this.shadowRoot.querySelectorAll('.event');
+    if(draggableItems.length!=0){
+      draggableItems.forEach(draggableItem => {
+        // console.log(draggableItem.getAttribute('key'));
+        // console.log(this.shadowRoot);
+        draggableItem.addEventListener('dragstart', (e)=>{ this.handleDragStart(e, draggableItem.getAttribute('key'))})
+      });
+    }
+    this.addEventListener('dragover', this.handleDragOver);
+    this.addEventListener('drop', this.handleDrop);
+  }
+
+  handleDragOver(e) {
+    e.preventDefault(); // Necessary. Allows us to drop.
+    console.log('dragged over');
+  }
+
+  handleDrop(e) {
+    e.dataTransfer.effectAllowed = "move";
+    let id = e.dataTransfer.getData('text/plain');
+    console.log('drop', e.dataTransfer.getData('text/plain'));
+    this.onEventChange(id, formatISO(this.day));
+  }
+
+  handleDragStart(e, key) {
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData("text/plain", key);
+    console.log('dragging ', key);
+  }
+
   renderEventsTemplate() {
     let allEvents = [];
     let count = 0;
@@ -192,7 +224,7 @@ export class AppCalendarCell extends LitElement {
         if(count<2){
           allEvents.push(
             html`
-              <div class="event" draggable="true">
+              <div class="event" draggable="true" key="${item.id}">
                 <span>${item.title.substring(0,12)}</span>
               </div>
             `
