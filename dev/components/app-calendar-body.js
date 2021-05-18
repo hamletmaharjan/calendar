@@ -46,7 +46,6 @@ export class AppCalendarBody extends LitElement {
       }
       
       /* GRID */
-      
       .row {
         margin: 0;
         padding: 0;
@@ -98,7 +97,9 @@ export class AppCalendarBody extends LitElement {
       */
       currentMonth: {type: Object},
 
-      events: {type:Array}
+      events: {type:Array},
+
+      onMoreMenuClick: {type: Function}
     };
   }
  
@@ -130,6 +131,7 @@ export class AppCalendarBody extends LitElement {
               .monthStart="${monthStart}"
               .selectedDate="${this.selectedDate}"
               .formattedDate="${formattedDate}"
+              .onMoreMenuClick="${this.onMoreMenuClick}"
               ></app-calendar-cell>
             </div>
           `

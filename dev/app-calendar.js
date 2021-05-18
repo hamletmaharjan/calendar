@@ -4,9 +4,10 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {LitElement, html, css} from 'lit';
+import {LitElement, html, css, nothing} from 'lit';
 import {addMonths, subMonths, isAfter, isBefore, isSameDay} from 'date-fns';
 
+import './components/app-menu';
 import './components/app-calendar-header';
 import './components/app-calendar-cell.js';
 import './components/app-calendar-content.js';
@@ -34,6 +35,7 @@ export class AppCalendar extends LitElement {
       /* GENERAL */
       * {
         box-sizing: border-box;
+        font-family: 'Open Sans', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
       }
       
       :host {
@@ -78,7 +80,9 @@ export class AppCalendar extends LitElement {
       /**
        * array to hold all the events
        */
-      events: {type:Array}
+      events: {type:Array},
+
+      showAppMenu: {type: Boolean}
     };
   }
 
@@ -88,19 +92,31 @@ export class AppCalendar extends LitElement {
   constructor() {
     super();
 
+    this.showAppMenu = false;
     this.currentMonth = new Date();
     this.selectedDate = new Date();
     this.events = [
       {"start":"2021-05-17T08:00:00.000Z","end":"2021-05-17T17:00:00.000Z","title":"Business of Software Conference"},
       {"start":"2021-05-17T08:00:00.000Z","end":"2021-05-17T17:00:00.000Z","title":"test"},
       {"start":"2021-05-22T12:00:00.000Z","end":"2021-05-21T20:00:00.000Z","title":"All hands"},
+      {"start":"2021-05-18T08:00:00.000Z","end":"2021-05-18T17:00:00.000Z","title":"Business of Software Conference"},
+      {"start":"2021-05-18T08:00:00.000Z","end":"2021-05-18T17:00:00.000Z","title":"test"},
+      {"start":"2021-05-22T12:00:00.000Z","end":"2021-05-21T20:00:00.000Z","title":"All hands"},
       {"start":"2021-05-29T12:00:00.000Z","end":"2021-05-39T20:00:00.000Z","title":"Community binge marathon"},
-      {"start":"2021-05-17T06:00:00.000Z","end":"2021-05-17T07:00:00.000Z","title":"Product team mtg."}
+      {"start":"2021-05-18T06:00:00.000Z","end":"2021-05-18T07:00:00.000Z","title":"Team Meeting"},
+      {"start":"2021-05-17T06:00:00.000Z","end":"2021-05-17T07:00:00.000Z","title":"some Meeting"}
     ];
     this.nextMonth = this.nextMonth.bind(this);
     this.prevMonth = this.prevMonth.bind(this);
+    this.handleShowAppMenu = this.handleShowAppMenu.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
   }
 
+  firstUpdated() {
+    console.log('here');
+    this.menu = this.shadowRoot.querySelector('app-menu');
+    console.log(this.menu);
+  }
 
   nextMonth() {
     this.currentMonth = addMonths(this.currentMonth, 1);
@@ -124,10 +140,31 @@ export class AppCalendar extends LitElement {
           .onNextMonthClick="${this.nextMonth}"
           .currentMonth="${this.currentMonth}"
           ></app-calendar-header>
-        <app-calendar-content .events="${this.events}" .currentMonth="${this.currentMonth}" .selectedDate="${this.selectedDate}"></app-calendar-content>
-        
+        <app-calendar-content 
+          .events="${this.events}" 
+          .currentMonth="${this.currentMonth}" 
+          .selectedDate="${this.selectedDate}"
+          .onMoreMenuClick="${this.handleShowAppMenu}"
+          ></app-calendar-content>
+        <app-menu .onCancel="${this.handleCancel}" .day="${this.day}"></app-menu>
       </div>
     `;
+  }
+
+  handleShowAppMenu(e, items, day) {
+    console.log('more', items);
+    // let menu = this.shadowRoot.querySelector('app-menu');
+    const positions = {left:e.clientX-10 + 'px', top: e.clientY+'px'};
+    this.menu.positions = {...positions};
+    console.log(positions);
+    this.menu.items = items;
+    this.menu.day = day;
+    this.menu.hidden = false;
+  }
+
+  handleCancel() {
+    console.log('cancel')
+    this.menu.hidden = true;
   }
 
 }

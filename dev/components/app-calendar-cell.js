@@ -4,8 +4,10 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {LitElement, html, css} from 'lit';
+import {LitElement, html, css, nothing} from 'lit';
 import {isSameDay, isSameMonth} from 'date-fns';
+
+import './app-menu';
 
 /**
  * `<app-calendar-body>` Custom component to add a calendar body
@@ -105,6 +107,7 @@ export class AppCalendarCell extends LitElement {
       }
       .bottom {
         font-size:12px;
+        position:relative;
       }
       .event {
         background:#039dfc;
@@ -118,8 +121,14 @@ export class AppCalendarCell extends LitElement {
       .more {
         text-align:center;
       }
+      app-menu {
+        position: absolute;
+        top:5px;
+        z-index:4;
+      }
     `;
   }
+
 
   /**
    * Static getter properties
@@ -148,8 +157,31 @@ export class AppCalendarCell extends LitElement {
        */
       monthStart: {type:Object},
 
-      events: {type:Array}
+      events: {type:Array},
+
+      showAppMenu: {type: Boolean},
+
+      onMoreMenuClick: {type: Function},
+
+      hasMore: {type: Boolean}
     };
+  }
+
+  constructor() {
+    super();
+
+    this.hasMore = false;
+    this.showAppMenu = false;
+
+    this.handleCancel = this.handleCancel.bind(this);
+  }
+
+  handleMoreClick(e) {
+    let filteredEvents = this.events.filter(eventItem => {
+      return isSameDay(new Date(eventItem.start), this.day);
+    });
+    // filteredEvents.splice(0,2);
+    this.onMoreMenuClick(e, filteredEvents, this.day);
   }
 
   renderEventsTemplate() {
@@ -160,7 +192,7 @@ export class AppCalendarCell extends LitElement {
         if(count<2){
           allEvents.push(
             html`
-              <div class="event">
+              <div class="event" draggable="true">
                 <span>${item.title.substring(0,12)}</span>
               </div>
             `
@@ -169,17 +201,36 @@ export class AppCalendarCell extends LitElement {
         count++;
       }
     });
+
     if(count>2){
+      this.hasMore = true;
       allEvents.push(
         html`
           <div class="more">
-            <span>+ ${count-2} more</span>
+            <span @click="${this.handleMoreClick}">+ ${count-2} more</span>
           </div>
         `
       )
     }
 
     return allEvents;
+  }
+
+  handleMore() {
+    this.showAppMenu = true;
+  }
+
+  renderMoreTemplate() {
+    let filteredEvents = this.events.filter(eventItem => {
+      return isSameDay(new Date(eventItem.start), this.day);
+    });
+    // filteredEvents.splice(0,2);
+    console.log(filteredEvents);
+    return html`<app-menu .items="${filteredEvents}" .onCancel="${this.handleCancel}" .day="${this.day}"></app-menu>`
+  }
+
+  handleCancel() {
+    this.showAppMenu = false;
   }
 
   /**
@@ -202,6 +253,7 @@ export class AppCalendarCell extends LitElement {
         <div class="bottom">
           ${this.renderEventsTemplate()}
         </div>
+        ${this.hasMore && this.showAppMenu ? this.renderMoreTemplate(): nothing}
       </div> 
     `;
   }
