@@ -164,7 +164,8 @@ export class AppCalendarCell extends LitElement {
       onMoreMenuClick: {type: Function},
 
       hasMore: {type: Boolean},
-      onEventChange: {type: Function}
+      onEventChange: {type: Function},
+      onAddEvent: {type: Function}
     };
   }
 
@@ -177,6 +178,13 @@ export class AppCalendarCell extends LitElement {
     this.handleCancel = this.handleCancel.bind(this);
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.shadowRoot.addEventListener('dblclick', (e)=> {
+      console.log('dblcli');
+      this.onAddEvent(this.day);
+    });
+  }
 
   handleMoreClick(e) {
     this.showAppMenu = true;
@@ -190,7 +198,7 @@ export class AppCalendarCell extends LitElement {
   }
 
   updated() {
-    console.log(this.showAppMenu);
+    // console.log(this.showAppMenu);
     let draggableItems = this.shadowRoot.querySelectorAll('.event');
     if(draggableItems.length!=0){
       draggableItems.forEach(draggableItem => {

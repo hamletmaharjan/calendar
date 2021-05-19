@@ -41,7 +41,8 @@ export class AppCalendarContent extends LitElement {
       events: {type:Array},
 
       onMoreMenuClick: {type: Function},
-      onEventChange: {type: Function}
+      onEventChange: {type: Function},
+      onAddEvent: {type: Function}
     };
   }
 
@@ -63,6 +64,7 @@ export class AppCalendarContent extends LitElement {
           .currentMonth="${this.currentMonth}"
           .onMoreMenuClick="${this.onMoreMenuClick}"
           .onEventChange="${this.onEventChange}"
+          .onAddEvent="${this.onAddEvent}"
           ></app-calendar-body>
       </div>
     `;

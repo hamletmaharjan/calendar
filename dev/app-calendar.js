@@ -5,13 +5,15 @@
  */
 
 import {LitElement, html, css, nothing} from 'lit';
-import {addMonths, subMonths, isAfter, isBefore, isSameDay} from 'date-fns';
+import {addMonths, subMonths, isAfter, isBefore, isSameDay, formatISO} from 'date-fns';
 
 import './components/app-menu';
 import './components/app-calendar-header';
 import './components/app-calendar-cell.js';
 import './components/app-calendar-content.js';
 import './components/app-calendar-content-header.js';
+
+import './components/app-add-event';
 
 
 /**
@@ -113,26 +115,21 @@ export class AppCalendar extends LitElement {
     this.handleShowAppMenu = this.handleShowAppMenu.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleChangeEvent = this.handleChangeEvent.bind(this);
+    this.handleAddEvent = this.handleAddEvent.bind(this);
+    this.handleSubmitEventData = this.handleSubmitEventData.bind(this);
   }
 
   connectedCallback() {
     super.connectedCallback();
     this.counter = 0;
     this.shadowRoot.addEventListener('click', (e) => {
-      // console.log(this.showAppMenu);
-    
+      // console.log(e.target);
       if(e.target!=this.menu && this.showAppMenu){
         this.counter++;
         if(this.counter>1){
           console.log('shown', this.showAppMenu, e.target);
           this.handleCancel();
         }
-        // console.log(e.target);
-        // if(){
-          
-
-         
-        // }
         
       }
     });
@@ -140,6 +137,7 @@ export class AppCalendar extends LitElement {
 
   firstUpdated() {
     this.menu = this.shadowRoot.querySelector('app-menu');
+    this.eventDialog = this.shadowRoot.querySelector('app-add-event');
   }
 
   nextMonth() {
@@ -171,9 +169,11 @@ export class AppCalendar extends LitElement {
           .selectedDate="${this.selectedDate}"
           .onMoreMenuClick="${this.handleShowAppMenu}"
           .onEventChange="${this.handleChangeEvent}"
+          .onAddEvent="${this.handleAddEvent}"
           ></app-calendar-content>
         <app-menu .onCancel="${this.handleCancel}" .items="${this.events}" .day="${this.testDate}"></app-menu>
       </div>
+      <app-add-event .onSubmitData="${this.handleSubmitEventData}"></app-add-event>
     `;
   }
 
@@ -215,6 +215,24 @@ export class AppCalendar extends LitElement {
     });
     // console.log(this.events);
   }
+
+  handleAddEvent(day) {
+    console.log('event dialog');
+    this.eventDialog.day = day;
+    this.eventDialog.showAddEvent();
+  }
+
+  handleSubmitEventData(data) {
+    console.log(data)
+    data.id = this.events.length+1;
+    this.events = [...this.events, data];
+    this.eventDialog.hideAddEvent();
+  }
+
+  // disconnectedCallback() {
+  //   super.disconnectedCallback();
+
+  // }
 
 }
  
