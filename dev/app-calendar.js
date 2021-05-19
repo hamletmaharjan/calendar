@@ -82,7 +82,8 @@ export class AppCalendar extends LitElement {
        */
       events: {type:Array},
 
-      showAppMenu: {type: Boolean}
+      showAppMenu: {type: Boolean},
+      testDate: {type: Object}
     };
   }
 
@@ -95,6 +96,7 @@ export class AppCalendar extends LitElement {
     this.showAppMenu = false;
     this.currentMonth = new Date();
     this.selectedDate = new Date();
+    this.testDate = new Date();
     this.events = [
       {"id":1, "start":"2021-05-17T08:00:00.000Z","end":"2021-05-17T17:00:00.000Z","title":"Business of Software Conference"},
       {"id":2, "start":"2021-05-17T08:00:00.000Z","end":"2021-05-17T17:00:00.000Z","title":"test"},
@@ -113,10 +115,31 @@ export class AppCalendar extends LitElement {
     this.handleChangeEvent = this.handleChangeEvent.bind(this);
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.counter = 0;
+    this.shadowRoot.addEventListener('click', (e) => {
+      // console.log(this.showAppMenu);
+    
+      if(e.target!=this.menu && this.showAppMenu){
+        this.counter++;
+        if(this.counter>1){
+          console.log('shown', this.showAppMenu, e.target);
+          this.handleCancel();
+        }
+        // console.log(e.target);
+        // if(){
+          
+
+         
+        // }
+        
+      }
+    });
+  }
+
   firstUpdated() {
-    console.log('here');
     this.menu = this.shadowRoot.querySelector('app-menu');
-    console.log(this.menu);
   }
 
   nextMonth() {
@@ -149,13 +172,20 @@ export class AppCalendar extends LitElement {
           .onMoreMenuClick="${this.handleShowAppMenu}"
           .onEventChange="${this.handleChangeEvent}"
           ></app-calendar-content>
-        <app-menu .onCancel="${this.handleCancel}" .day="${this.day}"></app-menu>
+        <app-menu .onCancel="${this.handleCancel}" .items="${this.events}" .day="${this.testDate}"></app-menu>
       </div>
     `;
   }
 
   handleShowAppMenu(e, items, day, pos) {
-    console.log(pos);
+    this.showAppMenu = true;
+    this.testDate = day;
+    this.counter = 0;
+    console.log('show', items);
+    // console.log(items);
+    // let filteredEvents = this.events.filter(eventItem => {
+    //   return isSameDay(new Date(eventItem.start), thisday);
+    // });
     // let menu = this.shadowRoot.querySelector('app-menu');
     // const positions = {left:e.clientX-10 + 'px', top: e.clientY+'px'};
     // this.menu.positions = {...positions};
@@ -169,20 +199,21 @@ export class AppCalendar extends LitElement {
   handleCancel() {
     console.log('cancel')
     this.menu.hidden = true;
+    this.showAppMenu = false;
   }
 
   handleChangeEvent(id,start) {
-    console.log(id, start);
+    // console.log(id, start);
 
     this.events = this.events.map((item) => {
       if(item['id'] == id) {
        
         item.start = start;
-        console.log('yes',item.start);
+        // console.log('yes',item.start);
       } 
       return {...item}
     });
-    console.log(this.events);
+    // console.log(this.events);
   }
 
 }

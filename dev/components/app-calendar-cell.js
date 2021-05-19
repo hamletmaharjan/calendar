@@ -177,7 +177,9 @@ export class AppCalendarCell extends LitElement {
     this.handleCancel = this.handleCancel.bind(this);
   }
 
+
   handleMoreClick(e) {
+    this.showAppMenu = true;
     let rect = this.shadowRoot.querySelector('#test').getBoundingClientRect();
     // console.log(rect);
     let filteredEvents = this.events.filter(eventItem => {
@@ -188,6 +190,7 @@ export class AppCalendarCell extends LitElement {
   }
 
   updated() {
+    console.log(this.showAppMenu);
     let draggableItems = this.shadowRoot.querySelectorAll('.event');
     if(draggableItems.length!=0){
       draggableItems.forEach(draggableItem => {
@@ -198,11 +201,16 @@ export class AppCalendarCell extends LitElement {
     }
     this.addEventListener('dragover', this.handleDragOver);
     this.addEventListener('drop', this.handleDrop);
+    // console.log()
+    // if(this.showAppMenu) {
+    //   console.log('handlemoreclick');
+    //   this.handleMoreClick('ev');
+    // }
   }
 
   handleDragOver(e) {
     e.preventDefault(); // Necessary. Allows us to drop.
-    console.log('dragged over');
+    // console.log('dragged over');
   }
 
   handleDrop(e) {

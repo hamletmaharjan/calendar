@@ -5,7 +5,7 @@
  */
 
 import {LitElement, html, css, nothing} from 'lit';
-import {format} from 'date-fns';
+import {format, isSameDay} from 'date-fns';
 import { styleMap } from 'lit/directives/style-map';
 
 import '@polymer/paper-item/paper-item.js';
@@ -125,11 +125,34 @@ export class AppMenu extends LitElement {
     this.positions = {top:'10px', left: '10px'};
   }
 
+  updated() {
+    let draggableItems = this.shadowRoot.querySelectorAll('.list-item');
+    if(draggableItems.length!=0){
+      draggableItems.forEach(draggableItem => {
+        draggableItem.addEventListener('dragstart', (e)=>{ this.handleDragStart(e, draggableItem.getAttribute('key'))})
+      });
+    }
+    this.addEventListener('dragend', this.handleDragLeave);
+  }
+
+  handleDragLeave(e) {
+    console.log('end');
+    // this.requestUpdate();
+  }
+
+  handleDragStart(e, key) {
+    console.log('dragging list');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData("text/plain", key);
+    // console.log('dragging ', key);
+  }
+
   renderTemplate() {
+    
     return  html`
     <p>something</p>
       <paper-listbox class="list">
-        ${this.items.map(item => {
+        ${this.items.map(({...item}) => {
           return html`<paper-item>${item.title}</paper-item>`;
         })}
       </paper-listbox>
@@ -143,6 +166,10 @@ export class AppMenu extends LitElement {
   */
   render() {
     // console.log(this.day);
+    let filteredEvents = this.items.filter(eventItem => {
+      return isSameDay(new Date(eventItem.start), this.day);
+    });
+    console.log('render menu');
     return this.hidden?nothing: html`
       <div class="listbox" style=${styleMap(this.positions)}>
         <div class="list-heading">
@@ -150,8 +177,8 @@ export class AppMenu extends LitElement {
           <span @click="${this.onCancel}">X</span>
         </div>
         <div class="list-body">
-          ${this.items.map(item => {
-            return html`<div class="list-item" draggable="true">${item.title}</div>`;
+          ${filteredEvents.map(item => {
+            return html`<div class="list-item" draggable="true" key="${item.id}">${item.title}</div>`;
           })}
         </div>
       </div>
