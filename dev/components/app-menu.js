@@ -121,7 +121,7 @@ export class AppMenu extends LitElement {
   constructor() {
     super();
 
-    this.hidden = true;
+    this.hidden = false;
     this.positions = {top:'10px', left: '10px'};
   }
 

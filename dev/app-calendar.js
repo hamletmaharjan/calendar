@@ -88,7 +88,8 @@ export class AppCalendar extends LitElement {
       testDate: {type: Object},
 
       showAddEvent: {type:Boolean},
-      day: {type: Object}
+      day: {type: Object},
+      appMenuPositions: {type: Object}
     };
   }
 
@@ -175,7 +176,13 @@ export class AppCalendar extends LitElement {
           .onEventChange="${this.handleChangeEvent}"
           .onAddEvent="${this.handleAddEvent}"
           ></app-calendar-content>
-        <app-menu .onCancel="${this.handleCancel}" .items="${this.events}" .day="${this.testDate}"></app-menu>
+        ${this.showAppMenu? html`
+        <app-menu 
+        .onCancel="${this.handleCancel}" 
+        .items="${this.events}" 
+        .day="${this.testDate}"
+        .positions="${this.appMenuPositions}"
+        ></app-menu>`: nothing}
       </div>
       ${this.showAddEvent? html`<app-add-event 
         .onSubmitData="${this.handleSubmitEventData}"
@@ -188,19 +195,13 @@ export class AppCalendar extends LitElement {
   handleShowAppMenu(e, items, day, pos) {
     this.showAppMenu = true;
     this.testDate = day;
+    this.appMenuPositions = pos;
     this.counter = 0;
-    console.log('show', items);
-    // console.log(items);
-    this.menu.positions = pos;
-    // console.log(positions);
-    this.menu.items = items;
-    this.menu.day = day;
-    this.menu.hidden = false;
   }
 
   handleCancel() {
     console.log('cancel')
-    this.menu.hidden = true;
+    // this.menu.hidden = true;
     this.showAppMenu = false;
   }
 
@@ -208,13 +209,10 @@ export class AppCalendar extends LitElement {
     // console.log(id, start);
     this.events = this.events.map((item) => {
       if(item['id'] == id) {
-       
         item.start = start;
-        // console.log('yes',item.start);
       } 
       return {...item}
     });
-    // console.log(this.events);
   }
 
   handleAddEvent(day) {

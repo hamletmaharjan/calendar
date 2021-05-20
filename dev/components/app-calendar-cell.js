@@ -303,7 +303,6 @@ export class AppCalendarCell extends LitElement {
         <div class="bottom">
           ${this.renderEventsTemplate()}
         </div>
-        ${this.hasMore && this.showAppMenu ? this.renderMoreTemplate(): nothing}
       </div> 
     `;
   }
