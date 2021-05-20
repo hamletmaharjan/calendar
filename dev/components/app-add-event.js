@@ -6,6 +6,7 @@
 
 //  import {format} from 'date-fns';
 import {LitElement, html, css, render, nothing} from 'lit';
+import {customElement, property} from 'lit/decorators.js';
 import {format, formatISO, addHours} from 'date-fns';
 
 import '@vaadin/vaadin-dialog';
@@ -106,10 +107,9 @@ export class AppAddEvent extends LitElement {
 
       title: {type: String},
       startDate: {type: String},
-
-      showDialog: {type: Boolean},
       onSubmitData: {type: Function},
-      day: {type: Object}
+      day: {type: Object},
+      onHideAddEvent: {type: Function}
 
     };
   }
@@ -120,31 +120,15 @@ export class AppAddEvent extends LitElement {
   constructor() {
     super();
 
-    this.showDialog = false;
     this.dateFormat = "MMMM yyyy";
     this.title = '';
 
     this.dialogRenderer = this.dialogRenderer.bind(this);
-    this.handleCancel = this.handleCancel.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
   }
 
-  // firstUpdated() {
-  //   this.dialog = this.shadowRoot.querySelector('vaadin-dialog');
-  //   console.log(this.dialog);
-  // }
-
-  showAddEvent() {
-    this.showDialog = true;
-    console.log('title show',this.title)
-    // this.dialog.opened = true;
-  }
-
-  hideAddEvent() {
-    this.showDialog = false;
-    
-  }
+  
 
   renderTemplate() {
     return html`
@@ -159,12 +143,12 @@ export class AppAddEvent extends LitElement {
   */
   render() {
     // console.log(this.title)
-    return html` ${this.showDialog ? html`<vaadin-dialog
-    no-close-on-esc no-close-on-outside-click
-    opened
-    .renderer="${this.dialogRenderer}"
-    >
-  </vaadin-dialog>`: nothing}`;
+    return html`<vaadin-dialog
+      no-close-on-esc no-close-on-outside-click
+      opened
+      .renderer="${this.dialogRenderer}"
+      >
+    </vaadin-dialog>`;
      
   }
 
@@ -180,7 +164,7 @@ export class AppAddEvent extends LitElement {
         <input type="text" .value="${this.title}" @input="${this.handleInputChange}" name="title" style="width:95%;"><br>
         <div class="modal-footer" style="margin-top:15px">
           <vaadin-button theme="primary small" @click="${this.handleAdd}">ADD</vaadin-button>
-          <vaadin-button theme="small" @click="${this.handleCancel}">CANCEL</vaadin-button>
+          <vaadin-button theme="small" @click="${this.onHideAddEvent}">CANCEL</vaadin-button>
         </div>
       </div>
     `;
@@ -201,16 +185,6 @@ export class AppAddEvent extends LitElement {
     
     this.onSubmitData({title:this.title?this.title:'untitled', start: formatISO(this.day)});
     this.title = '';
-  }
-
-  handleCancel() {
-    console.log('handlcla')
-    this.title = '';
-    this.showDialog = false;
-    
-    console.log('title cancel', this.title);
-    // this.requestUpdate();
-    // this.dialog.opened = false;
   }
 
 }

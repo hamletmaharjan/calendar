@@ -85,7 +85,10 @@ export class AppCalendar extends LitElement {
       events: {type:Array},
 
       showAppMenu: {type: Boolean},
-      testDate: {type: Object}
+      testDate: {type: Object},
+
+      showAddEvent: {type:Boolean},
+      day: {type: Object}
     };
   }
 
@@ -96,6 +99,7 @@ export class AppCalendar extends LitElement {
     super();
 
     this.showAppMenu = false;
+    this.showAddEvent = false;
     this.currentMonth = new Date();
     this.selectedDate = new Date();
     this.testDate = new Date();
@@ -117,6 +121,7 @@ export class AppCalendar extends LitElement {
     this.handleChangeEvent = this.handleChangeEvent.bind(this);
     this.handleAddEvent = this.handleAddEvent.bind(this);
     this.handleSubmitEventData = this.handleSubmitEventData.bind(this);
+    this.handleHideAddEvent = this.handleHideAddEvent.bind(this);
   }
 
   connectedCallback() {
@@ -137,7 +142,6 @@ export class AppCalendar extends LitElement {
 
   firstUpdated() {
     this.menu = this.shadowRoot.querySelector('app-menu');
-    this.eventDialog = this.shadowRoot.querySelector('app-add-event');
   }
 
   nextMonth() {
@@ -173,7 +177,11 @@ export class AppCalendar extends LitElement {
           ></app-calendar-content>
         <app-menu .onCancel="${this.handleCancel}" .items="${this.events}" .day="${this.testDate}"></app-menu>
       </div>
-      <app-add-event .onSubmitData="${this.handleSubmitEventData}"></app-add-event>
+      ${this.showAddEvent? html`<app-add-event 
+        .onSubmitData="${this.handleSubmitEventData}"
+        .onHideAddEvent="${this.handleHideAddEvent}"
+        .day="${this.day}"
+        ></app-add-event>`: nothing}
     `;
   }
 
@@ -183,12 +191,6 @@ export class AppCalendar extends LitElement {
     this.counter = 0;
     console.log('show', items);
     // console.log(items);
-    // let filteredEvents = this.events.filter(eventItem => {
-    //   return isSameDay(new Date(eventItem.start), thisday);
-    // });
-    // let menu = this.shadowRoot.querySelector('app-menu');
-    // const positions = {left:e.clientX-10 + 'px', top: e.clientY+'px'};
-    // this.menu.positions = {...positions};
     this.menu.positions = pos;
     // console.log(positions);
     this.menu.items = items;
@@ -204,7 +206,6 @@ export class AppCalendar extends LitElement {
 
   handleChangeEvent(id,start) {
     // console.log(id, start);
-
     this.events = this.events.map((item) => {
       if(item['id'] == id) {
        
@@ -217,16 +218,20 @@ export class AppCalendar extends LitElement {
   }
 
   handleAddEvent(day) {
-    console.log('event dialog');
-    this.eventDialog.day = day;
-    this.eventDialog.showAddEvent();
+    this.showAddEvent = true;
+    this.day = day;
+  }
+
+  handleHideAddEvent() {
+    this.showAddEvent = false;
   }
 
   handleSubmitEventData(data) {
-    console.log(data)
+    console.log(data);
     data.id = this.events.length+1;
     this.events = [...this.events, data];
-    this.eventDialog.hideAddEvent();
+    this.showAddEvent = false;
+    // this.eventDialog.hideAddEvent();
   }
 
   // disconnectedCallback() {
