@@ -5,10 +5,13 @@
  */
 
 //  import {format} from 'date-fns';
-import {LitElement, html, css, render} from 'lit';
-import {format, formatISO} from 'date-fns';
+import {LitElement, html, css, render, nothing} from 'lit';
+import {format, formatISO, addHours} from 'date-fns';
 
 import '@vaadin/vaadin-dialog';
+import '@vaadin/vaadin-button';
+import '@polymer/iron-icon/iron-icon.js';
+import '@polymer/iron-icons/iron-icons.js';
 
 /**
 * `<app-add-event>` Custom component to add a new event to the calendar
@@ -63,6 +66,28 @@ export class AppAddEvent extends LitElement {
           position: relative;
       }
       
+      .header {
+        margin: 0;
+        padding: 5px;
+        overflow:hidden;
+      }
+      .title{
+          float:left;
+          
+      }
+      .close {
+          float:right;
+          border:none;
+      }
+      .fullwidth {
+        width:90%;
+      }
+      input {
+        width:70px;
+      }
+      .modal-footer{
+        margin-top:10px;
+      }
       
     `;
   }
@@ -97,6 +122,7 @@ export class AppAddEvent extends LitElement {
 
     this.showDialog = false;
     this.dateFormat = "MMMM yyyy";
+    this.title = '';
 
     this.dialogRenderer = this.dialogRenderer.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
@@ -104,18 +130,27 @@ export class AppAddEvent extends LitElement {
     this.handleAdd = this.handleAdd.bind(this);
   }
 
-  firstUpdated() {
-    this.dialog = this.shadowRoot.querySelector('vaadin-dialog');
-    console.log(this.dialog);
-  }
+  // firstUpdated() {
+  //   this.dialog = this.shadowRoot.querySelector('vaadin-dialog');
+  //   console.log(this.dialog);
+  // }
 
   showAddEvent() {
     this.showDialog = true;
+    console.log('title show',this.title)
     // this.dialog.opened = true;
   }
 
   hideAddEvent() {
     this.showDialog = false;
+    
+  }
+
+  renderTemplate() {
+    return html`
+    <label>Time</label><br>
+    <input type="time" @input="${this.handleInputChange}" name="startDate"> - <input type="time" @input="${this.handleInputChange}"> <br>
+    `
   }
   /**
   * render method
@@ -123,28 +158,30 @@ export class AppAddEvent extends LitElement {
   * @returns {customElements}
   */
   render() {
-    console.log('render modal')
-    return html`
-      <vaadin-dialog
-        no-close-on-esc no-close-on-outside-click
-        .opened="${this.showDialog}"
-        .renderer="${this.dialogRenderer}">
-      </vaadin-dialog>
-    `;
+    // console.log(this.title)
+    return html` ${this.showDialog ? html`<vaadin-dialog
+    no-close-on-esc no-close-on-outside-click
+    opened
+    .renderer="${this.dialogRenderer}"
+    >
+  </vaadin-dialog>`: nothing}`;
+     
   }
 
   dialogRenderer(root, dialog) {
-    // console.log(this);
+    console.log('title', this.title);
     const innerHTML = html`
-      <h2>Create and Event</h2>
-      <p>${format(this.day, 'MMM d')}</p>
+      <div class="header">
+        <h3 class="title" style="margin:0">Add an Event</h3>
+        <p>${format(this.day, 'MMM d')}</p>
+      </div>
       <div>
         <label>Event Title</label><br>
-        <input type="text" @input="${this.handleInputChange}" name="title"><br>
-        <label>Time</label><br>
-        <input type="time" @input="${this.handleInputChange}" name="startDate"> - <input type="time" @input="${this.handleInputChange}"> <br>
-        <button type="button" @click="${this.handleAdd}">add</button>
-        <button type="button" @click="${this.handleCancel}">cancel</button>
+        <input type="text" .value="${this.title}" @input="${this.handleInputChange}" name="title" style="width:95%;"><br>
+        <div class="modal-footer" style="margin-top:15px">
+          <vaadin-button theme="primary small" @click="${this.handleAdd}">ADD</vaadin-button>
+          <vaadin-button theme="small" @click="${this.handleCancel}">CANCEL</vaadin-button>
+        </div>
       </div>
     `;
     render(innerHTML, root);
@@ -152,21 +189,26 @@ export class AppAddEvent extends LitElement {
   }  
 
   handleInputChange(e) {
-    // console.log(typeof(e.target.value));
+    console.log('c')
     let name = e.target.name;
     let val = e.target.value;
     this[name] = val;
+
   }
 
   handleAdd() {
-    // console.log(formatISO(this.day))
-
-    this.onSubmitData({title:this.title, start: formatISO(this.day)})
+    // console.log( this.day)
+    
+    this.onSubmitData({title:this.title?this.title:'untitled', start: formatISO(this.day)});
+    this.title = '';
   }
+
   handleCancel() {
-    // console.log(this);
     console.log('handlcla')
+    this.title = '';
     this.showDialog = false;
+    
+    console.log('title cancel', this.title);
     // this.requestUpdate();
     // this.dialog.opened = false;
   }
