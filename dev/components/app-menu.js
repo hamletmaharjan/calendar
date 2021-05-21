@@ -110,10 +110,10 @@ export class AppMenu extends LitElement {
        * @type {{hidden : Boolean}}
        */
        hidden: {type: Boolean},
-
        onCancel: {type: Function},
 
-       day: {type: Object}
+       day: {type: Object},
+       showAppMenu: {type: Boolean}
       
     };
   }
@@ -170,7 +170,7 @@ export class AppMenu extends LitElement {
       return isSameDay(new Date(eventItem.start), this.day);
     });
     console.log('render menu');
-    return this.hidden?nothing: html`
+    return this.showAppMenu? html`
       <div class="listbox" style=${styleMap(this.positions)}>
         <div class="list-heading">
           <h3>${format(this.day, 'MMM d')}</h3>
@@ -182,7 +182,7 @@ export class AppMenu extends LitElement {
           })}
         </div>
       </div>
-    `;
+    `:nothing;
   }
 
 }

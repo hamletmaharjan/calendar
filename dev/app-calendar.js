@@ -104,6 +104,7 @@ export class AppCalendar extends LitElement {
     this.currentMonth = new Date();
     this.selectedDate = new Date();
     this.testDate = new Date();
+    this.appMenuPositions = {top:'0px', left:'0px'}
     this.events = [
       {"id":1, "start":"2021-05-17T08:00:00.000Z","end":"2021-05-17T17:00:00.000Z","title":"Business of Software Conference"},
       {"id":2, "start":"2021-05-17T08:00:00.000Z","end":"2021-05-17T17:00:00.000Z","title":"test"},
@@ -176,13 +177,13 @@ export class AppCalendar extends LitElement {
           .onEventChange="${this.handleChangeEvent}"
           .onAddEvent="${this.handleAddEvent}"
           ></app-calendar-content>
-        ${this.showAppMenu? html`
         <app-menu 
         .onCancel="${this.handleCancel}" 
         .items="${this.events}" 
         .day="${this.testDate}"
         .positions="${this.appMenuPositions}"
-        ></app-menu>`: nothing}
+        .showAppMenu="${this.showAppMenu}"
+        ></app-menu>
       </div>
       ${this.showAddEvent? html`<app-add-event 
         .onSubmitData="${this.handleSubmitEventData}"
